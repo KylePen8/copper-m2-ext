@@ -211,10 +211,11 @@ describe("check_availability", () => {
 });
 
 describe("copperTools", () => {
-  it("has exactly the four tools, each described", () => {
+  it("has exactly the five tools, each described", () => {
     expect(Object.keys(copperTools).sort()).toEqual([
       "calculate_cost",
       "check_availability",
+      "compare_products",
       "get_prices",
       "get_products",
     ]);

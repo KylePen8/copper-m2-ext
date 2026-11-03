@@ -48,6 +48,7 @@ import {
 } from "@/lib/copper/assistant/progress";
 import type {
   Availability,
+  Comparison,
   CostBreakdown,
   Prices,
   ProductList,
@@ -590,6 +591,16 @@ function SentInput({ name, input }: { name: string; input: unknown }) {
       />
     );
   }
+  if (name === "compare_products") {
+    return (
+      <Rows
+        rows={[
+          ["First", titleCase(String(value.productA ?? ""))],
+          ["Second", titleCase(String(value.productB ?? ""))],
+        ]}
+      />
+    );
+  }
   return (
     <Rows
       rows={Object.entries(value).map(([k, v]) => [titleCase(k), String(v)])}
@@ -702,6 +713,38 @@ function ToolOutput({ name, output }: { name: string; output: unknown }) {
             </span>
           </div>
         ))}
+      </div>
+    );
+  }
+  if (name === "compare_products") {
+    const result = output as Comparison;
+    if (result.status === "error") return <p>{result.message}</p>;
+    return (
+      <div className="flex flex-col gap-3">
+        <div className="grid grid-cols-2 gap-4">
+          {result.products.map((product) => (
+            <div key={product.id}>
+              <div className="font-medium">{product.name}</div>
+              <div className="text-muted-foreground text-xs">
+                {product.type}
+              </div>
+              <div className="text-primary font-bold tabular-nums">
+                {formatUsd(product.priceUsd)}
+              </div>
+              <div className="mt-1 text-xs">{product.colors.join(", ")}</div>
+              <ul className="mt-1 list-disc pl-4 text-xs">
+                {product.features.map((feature) => (
+                  <li key={feature.name}>{feature.name}</li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <div className="border-t pt-2">
+          {result.cheaper
+            ? `${result.cheaper} costs ${formatUsd(result.priceDifferenceUsd)} less.`
+            : "They cost the same."}
+        </div>
       </div>
     );
   }

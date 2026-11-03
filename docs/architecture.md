@@ -97,7 +97,7 @@ each step (tools on offer, thinking, tool calls, reply) as it streams in.
 | Page / route | `app/page.tsx` | Mounts the panel and passes `isAiConfigured()` to it. No new routes |
 | Components | `components/copper/ask-copper.tsx` | Launcher, Sheet panel, the tools on/off chats, stations and tool cards. The header's `#ask` link opens it |
 | Server Action | `lib/copper/assistant/ask.ts` | `askCopper({ messages, useTools })` returns `{ progress }` at once and fills it from `result.fullStream` |
-| Tools | `lib/copper/assistant/tools.ts` | `get_products`, `get_prices`, `calculate_cost`, `check_availability` |
+| Tools | `lib/copper/assistant/tools.ts` | `get_products`, `get_prices`, `calculate_cost`, `check_availability`, plus `compare_products` (this copy only: two products side by side from the catalog, no stock) |
 | Instructions | `lib/copper/assistant/instructions.ts` | Copper's system prompt, sent only with tools on |
 | Data | `lib/copper/data/catalog.json`, `lib/copper/data/inventory.json` | Prices and colors from the catalog; stock read fresh with `readInventory()` on every call |
 | AI calls | `callStream` (module 2, feature `ask-copper`) | Gemini with thought summaries, up to 5 steps with tools on. Logged to `ai_calls` per question |
