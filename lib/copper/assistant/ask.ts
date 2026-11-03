@@ -36,6 +36,12 @@ function errorMessage(error: unknown): string {
   return error instanceof Error ? error.message : String(error);
 }
 
+/** Removes the API key from a message in case a provider echoes it back. */
+function redactKey(message: string): string {
+  const key = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+  return key ? message.split(key).join("[redacted]") : message;
+}
+
 export async function askCopper(
   request: AskCopperRequest,
 ): Promise<AskCopperResult> {
@@ -117,7 +123,9 @@ export async function askCopper(
 
       if (!progress.reply) progress.reply = NO_REPLY;
       progress.status = "done";
-    } catch {
+    } catch (error) {
+      // Log why it failed (never the key) so the cause shows in the server logs.
+      console.error("askCopper failed:", redactKey(errorMessage(error)));
       if (!progress.reply) progress.reply = FAILED;
       progress.status = "error";
     }
